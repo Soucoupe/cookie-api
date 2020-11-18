@@ -67,14 +67,8 @@ type Bmak struct {
 	Fpcf Fpcf `json:"fpcf"`
 }
 
-func GenCookie(url string, abckCookie string, sensorInfo db.SensorData) (string, string, error) {
+func GenCookie(url string, abckCookie string, sensorInfo db.SensorData) (string, error) {
 	startTimestamp := GetCfDate()
-	/*
-		client, err := cclient.NewClient(tls.HelloChrome_Auto)
-		if err != nil {
-			return "", "", err
-		}
-	*/
 
 	abck := &Bmak{
 		UserAgent:      sensorInfo.Navigator.UserAgent,
@@ -115,7 +109,7 @@ func GenCookie(url string, abckCookie string, sensorInfo db.SensorData) (string,
 		NCk:            0,
 		AjType:         "0",
 		AjIndx:         "0",
-		Mr:             "-1",
+		Mr:             sensorInfo.Mr,
 		NavPerm:        "8",
 		APIPublicKey:   "afSbep8yjnZUjq3aL010jO15Sawj2VZfdYK8uY90uxq",
 		Cs:             "0a46G5m17Vrp4o4c",
@@ -148,7 +142,7 @@ func GenCookie(url string, abckCookie string, sensorInfo db.SensorData) (string,
 		},
 	}, int64(abck.StartTimeStamp), d3)
 	if err != nil {
-		return "", "", err
+		return "", err
 	}
 
 	abck = DeviceAct(abck)
@@ -172,5 +166,5 @@ func GenCookie(url string, abckCookie string, sensorInfo db.SensorData) (string,
 
 	sensorData = b + ";" + strconv.Itoa(int(GetCfDate()-abck.StartTimeStamp)) + ";" + strconv.Itoa(int(abck.Tst)) + ";" + strconv.Itoa(int(GetCfDate()-d))
 
-	return sensorData, "", nil
+	return sensorData, nil
 }

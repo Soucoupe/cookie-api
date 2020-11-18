@@ -6,16 +6,24 @@ import (
 	"github.com/GuapAIO/akamai-api/akamai"
 	"github.com/GuapAIO/akamai-api/config"
 	"github.com/GuapAIO/akamai-api/db"
+	"github.com/GuapAIO/akamai-api/px"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-pg/pg"
 )
 
-type GeneratorRequest struct {
+type AkamaiGeneratorRequest struct {
 	LicenseKey string `json:"licenseKey,omitempty"`
 
 	Abck string `json:"abck"`
 	URL  string `json:"url"`
+}
+
+type PXGeneratorRequest struct {
+	LicenseKey string `json:"licenseKey,omitempty"`
+
+	TargetURL string `json:"target"`
+	URL       string `json:"url"`
 }
 
 func main() {
@@ -40,19 +48,19 @@ func main() {
 	})
 
 	r.POST("/gen/akamai", func(c *gin.Context) {
-		var json GeneratorRequest
+		var json AkamaiGeneratorRequest
 		if err := c.ShouldBindJSON(&json); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		randomSensor, err := db.GetRandomSensor(db)
+		randomSensor, err := db.GetRandomSensor(dbPostgres)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		sensorData, _, err := akamai.GenCookie(json.URL, json.Abck)
+		sensorData, err := akamai.GenCookie(json.URL, json.Abck, *randomSensor)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -60,6 +68,29 @@ func main() {
 		}
 
 		c.JSON(http.StatusOK, gin.H{"sensor_data": sensorData})
+	})
+
+	r.POST("/gen/px", func(c *gin.Context) {
+		var json PXGeneratorRequest
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		randomSensor, err := db.GetRandomSensor(dbPostgres)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		cookies, err := px.GenCookie(json.TargetURL, json.URL, *randomSensor)
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"cookies": cookies})
 	})
 
 	r.POST("/collector", func(c *gin.Context) {
