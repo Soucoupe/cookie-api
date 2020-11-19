@@ -9,6 +9,6 @@
       "database": "sensor"
     },
     "ratelimit": {
-      "pastes-per-hour": 25
+      "gen-per-seconds": 300
     }
   }

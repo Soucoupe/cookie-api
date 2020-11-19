@@ -6,6 +6,7 @@ import (
 	"github.com/GuapAIO/akamai-api/akamai"
 	"github.com/GuapAIO/akamai-api/config"
 	"github.com/GuapAIO/akamai-api/db"
+	"github.com/GuapAIO/akamai-api/http/ratelimiter"
 	"github.com/GuapAIO/akamai-api/px"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -37,6 +38,9 @@ func main() {
 	})
 
 	r := gin.Default()
+
+	var limiter = ratelimiter.New(config.Conf.Ratelimit.GenPerSecond, int(config.Conf.Ratelimit.GenPerSecond*2), nil)
+	r.Use(limiter.Limit())
 
 	// Enable CORS
 	r.Use(cors.Default())

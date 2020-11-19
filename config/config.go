@@ -25,7 +25,7 @@ type (
 	}
 
 	Ratelimit struct {
-		PastesPerHour int `json:"pastes-per-hour"`
+		GenPerSecond float64 `json:"gen-per-second"`
 	}
 )
 
