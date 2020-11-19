@@ -38,7 +38,7 @@ func main() {
 
 	r := gin.Default()
 
-	// CORS
+	// Enable CORS
 	r.Use(cors.Default())
 
 	r.GET("/ping", func(c *gin.Context) {

@@ -114,5 +114,5 @@ type SensorData struct {
 	Fmz       int    `json:"fmz"`
 	Np        string `json:"np"`
 
-	PX400 string `json:"px400"`
+	PX400 int `json:"px400"`
 }
