@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/base64"
 	"encoding/json"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/GuapAIO/akamai-api/akamai"
 	"github.com/GuapAIO/akamai-api/config"
@@ -31,14 +33,25 @@ type PXGeneratorRequest struct {
 	URL       string `json:"url"`
 }
 
+// mustGetEnv is a helper function for getting environment variables.
+// Displays a warning if the environment variable is not set.
+func mustGetenv(k string) string {
+	v := os.Getenv(k)
+	if v == "" {
+		log.Fatalf("Warning: %s environment variable not set.\n", k)
+	}
+	return v
+}
+
 func main() {
 	config.LoadConfig()
 
 	dbPostgres := db.ConnectDb(&pg.Options{
-		Addr:     config.Conf.Database.Addr,
-		User:     config.Conf.Database.Username,
-		Password: config.Conf.Database.Password,
-		Database: config.Conf.Database.Database,
+		Network:  "unix",
+		Addr:     mustGetenv("INSTANCE_CONNECTION_NAME"),
+		User:     mustGetenv("DB_USER"),
+		Password: mustGetenv("DB_PASS"),
+		Database: mustGetenv("DB_NAME"),
 	})
 
 	r := gin.Default()

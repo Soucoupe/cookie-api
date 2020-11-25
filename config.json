@@ -2,12 +2,6 @@
     "server": {
       "port": 8080
     },
-    "database": {
-      "addr": "35.246.36.177:5432",
-      "username": "postgres",
-      "password": "0okgANm3kD3q1viO",
-      "database": "sensor"
-    },
     "ratelimit": {
       "gen-per-seconds": 300
     }
