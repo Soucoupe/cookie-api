@@ -46,13 +46,25 @@ func mustGetenv(k string) string {
 func main() {
 	config.LoadConfig()
 
-	dbPostgres := db.ConnectDb(&pg.Options{
-		Network:  "unix",
-		Addr:     mustGetenv("INSTANCE_CONNECTION_NAME"),
-		User:     mustGetenv("DB_USER"),
-		Password: mustGetenv("DB_PASS"),
-		Database: mustGetenv("DB_NAME"),
-	})
+	var dbPostgres *pg.DB
+
+	if config.Conf.Database.Addr != "" {
+		dbPostgres = db.ConnectDb(&pg.Options{
+			Addr:     config.Conf.Database.Addr,
+			User:     config.Conf.Database.Username,
+			Password: config.Conf.Database.Password,
+			Database: config.Conf.Database.Database,
+		})
+
+	} else {
+		dbPostgres = db.ConnectDb(&pg.Options{
+			Network:  "unix",
+			Addr:     mustGetenv("INSTANCE_CONNECTION_NAME"),
+			User:     mustGetenv("DB_USER"),
+			Password: mustGetenv("DB_PASS"),
+			Database: mustGetenv("DB_NAME"),
+		})
+	}
 
 	r := gin.Default()
 
