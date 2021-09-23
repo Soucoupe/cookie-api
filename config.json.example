@@ -3,9 +3,9 @@
       "port": 8080
     },
     "database": {
-      "addr": "35.246.36.177:5432",
-      "username": "postgres",
-      "password": "0okgANm3kD3q1viO",
+      "addr": "cloudsql ip",
+      "username": "db user",
+      "password": "db password",
       "database": "sensor"
     },
     "ratelimit": {

@@ -16,7 +16,7 @@ runtime: go114 # replace with go111 for Go 1.11
 main: cmd/api
 
 env_variables:
-  INSTANCE_CONNECTION_NAME: /cloudsql/handy-reference-296015:europe-west2:sensor/.s.PGSQL.5432
-  DB_USER: postgres
-  DB_PASS: 0okgANm3kD3q1viO
+  INSTANCE_CONNECTION_NAME: cloudsql sock
+  DB_USER: db user
+  DB_PASS: db pass
   DB_NAME: sensor
